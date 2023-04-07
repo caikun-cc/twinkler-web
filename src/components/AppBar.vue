@@ -9,7 +9,7 @@
                     <li v-for="item in menus" @click="navigationTo(item.route)">{{ item.title }}</li>
                 </ul>
             </div>
-            <div class="user-container" v-show="true">
+            <div class="user-container" v-show="true" @click="navigationTo('console')">
                 <img src="https://cloud.caikun.site/f/76sn/avatar.jpg" alt="">
                 <span>天上的星</span>
             </div>
