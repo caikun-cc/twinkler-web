@@ -1,16 +1,16 @@
 <template>
     <div class="home-root">
         <p class="big-logo">Twinkler</p>
-        <p class="website-description">Your photo album on the cloud.</p>
+        <p class="website-description">这是你的云端相册，你可以上传图片哦!</p>
         <button class="to-upload" @click="router().push({name:'upload'})">上传</button>
     </div>
 </template>
 
 <script>
-import router from "../router/router.js";
+import router from "../../router/router.js";
 
 export default {
-    name: "HomeContainer",
+    name: "IndexContainer",
     methods: {
         router() {
             return router
@@ -38,6 +38,7 @@ export default {
     font-size: 1.2rem;
     font-weight: bold;
     letter-spacing: 2px;
+    margin-top: 12px;
 }
 
 .to-upload {
@@ -48,11 +49,11 @@ export default {
     letter-spacing: 2px;
     background: none;
     border: 2px white solid;
-    margin-top: 12px;
+    margin-top: 4px;
 }
 
 .to-upload:hover {
-    border: 2px #686de0 solid;
+    border: 2px #f0932b solid;
     transition-duration: 0.3s;
 }
 </style>

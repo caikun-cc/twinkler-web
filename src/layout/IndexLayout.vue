@@ -2,7 +2,9 @@
     <div class="index-root">
         <AppBar class="appbar"/>
         <div class="index-container">
-            <router-view/>
+            <transition name="el-fade-in-linear">
+                <router-view/>
+            </transition>
         </div>
     </div>
 </template>
@@ -21,7 +23,7 @@ export default {
 
 .index-root {
     height: 100vh;
-    background-image: url("https://pic.imgdb.cn/item/642fd4e0a682492fcc5b9e38.png");
+    background: rgb(24,24,24);
 }
 
 .index-container {

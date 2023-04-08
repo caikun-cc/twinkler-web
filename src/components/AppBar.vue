@@ -6,7 +6,9 @@
         <div class="right">
             <div class="menu-container">
                 <ul>
-                    <li v-for="item in menus" @click="navigationTo(item.route)">{{ item.title }}</li>
+                    <li v-for="item in menus">
+                        <span onmouseover="this.style.cursor=' hand'" @click="navigationTo(item.route)">{{ item.title }}</span>
+                    </li>
                 </ul>
             </div>
             <div class="user-container" v-show="true" @click="navigationTo('console')">
@@ -25,7 +27,6 @@ export default {
     data() {
         return {
             menus: [
-                {title: "广场", route: "index"},
                 {title: "上传", route: "upload"},
                 //{title: "登录", route: "login"}
             ]
@@ -57,6 +58,7 @@ export default {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 3px;
+    cursor: pointer;
 }
 
 .right {
@@ -77,10 +79,11 @@ export default {
     font-weight: bold;
     letter-spacing: 2px;
     margin: 0 12px;
+    cursor : pointer;
 }
 
 .menu-container > ul > li:hover {
-    color: #686de0;
+    color: #ff793f;
     transition-duration: 0.2s;
 }
 
@@ -92,10 +95,11 @@ export default {
     border: 2px rgba(255, 255, 255, 0.7) solid;
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .user-container:hover {
-    border: 2px white solid;
+    border: 2px #ff793f solid;
     transition-duration: 0.5s;
 }
 
