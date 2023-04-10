@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const website = "http://192.168.1.183:8080"
+export const website = "https://twinkler.caikun.site/"
 
 const service = axios.create({
     baseURL: website,
