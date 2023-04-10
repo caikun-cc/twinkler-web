@@ -9,7 +9,6 @@ import Home from "../components/console/Home.vue";
 import IndexContainer from "../components/index/IndexContainer.vue";
 import Login from "../components/account/Login.vue";
 import Register from "../components/account/Register.vue";
-import {ElMessage} from "element-plus";
 
 /**
  * 主页

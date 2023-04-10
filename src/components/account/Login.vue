@@ -3,10 +3,10 @@
         <p class="login-text">登录</p>
         <el-form size="large">
             <el-form-item>
-                <el-input/>
+                <el-input placeholder="输入账号"/>
             </el-form-item>
             <el-form-item>
-                <el-input/>
+                <el-input placeholder="输入密码"/>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" style="width: 100%">登录</el-button>
