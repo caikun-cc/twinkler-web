@@ -1,10 +1,10 @@
 <template>
-  Login
+  Register
 </template>
 
 <script>
 export default {
-    name: "LoginLayout"
+    name: "Register"
 }
 </script>
 

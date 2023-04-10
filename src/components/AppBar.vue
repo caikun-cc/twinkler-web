@@ -28,7 +28,7 @@ export default {
         return {
             menus: [
                 {title: "上传", route: "upload"},
-                //{title: "登录", route: "login"}
+                {title: "登录", route: "login"}
             ]
         }
     },
@@ -79,7 +79,7 @@ export default {
     font-weight: bold;
     letter-spacing: 2px;
     margin: 0 12px;
-    cursor : pointer;
+    cursor: pointer;
 }
 
 .menu-container > ul > li:hover {
