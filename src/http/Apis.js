@@ -15,10 +15,12 @@ export function sendEmailVerificationCode(email) {
     })
 }
 
-export function register(user) {
+export function userRegister(user) {
     return service({
         method: "POST",
         url: "/account/register",
-        data: user
+        data: user,
+        headers: {'Content-Type': 'multipart/form-data'}
     })
 }
+
