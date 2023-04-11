@@ -1,7 +1,7 @@
 <template>
     <div class="account-root">
         <div class="account-container">
-            <transition name="el-fade-in">
+            <transition name="el-zoom-in-center">
                 <router-view/>
             </transition>
         </div>

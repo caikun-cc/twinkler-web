@@ -1,12 +1,12 @@
 <template>
-    <el-card style="padding: 0 24px">
+    <el-card id="login-root">
         <p class="login-text">登录</p>
         <el-form size="large">
             <el-form-item>
-                <el-input placeholder="输入账号"/>
+                <el-input clearable placeholder="邮箱" v-model="email"/>
             </el-form-item>
             <el-form-item>
-                <el-input placeholder="输入密码"/>
+                <el-input type="password" show-password clearable placeholder="密码" v-model="password"/>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" style="width: 100%">登录</el-button>
@@ -26,7 +26,10 @@ import router from "../../router/router.js";
 export default {
     name: "Login",
     data() {
-        return {}
+        return {
+            email: null,
+            password: null
+        }
     },
     methods: {
         router() {
@@ -37,8 +40,9 @@ export default {
 </script>
 
 <style scoped>
-.el-card {
+#login-root {
     width: 420px;
+    padding: 0 24px
 }
 
 .login-text {
@@ -51,7 +55,7 @@ export default {
     display: flex;
     padding: 0 3px;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
     cursor: pointer;
 }
 
