@@ -1,6 +1,6 @@
 import service from "./HttpClient.js"
 
-const multipartDataHeader = {"Content-Type": "multipart/form-data"}
+export const multipartDataHeader = {"Content-Type": "multipart/form-data"}
 
 /**
  * 发送注册验证码
@@ -35,6 +35,16 @@ export function userRegister(user) {
         url: "/account/register",
         data: user,
         headers: multipartDataHeader
+    })
+}
+
+export function userDetails(token) {
+    return service({
+        method: "GET",
+        url: "/user/details",
+        headers: {
+            "token": token
+        }
     })
 }
 

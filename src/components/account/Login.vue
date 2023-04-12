@@ -25,7 +25,7 @@
 import router from "../../router/router.js";
 import jwtSubject from "../../utils/JwtSubject.js";
 import {ElMessage, ElNotification} from "element-plus";
-import {login} from "../../http/Apis.js";
+import {login, userDetails} from "../../http/Apis.js";
 
 export default {
     name: "Login",
@@ -55,8 +55,15 @@ export default {
         },
         test() {
             let token = jwtSubject.obtainDetails()
-            console.log(token)
-            console.log(jwtSubject.isAvailable())
+            // console.log(token)
+            // console.log(jwtSubject.isAvailable())
+            const {accessToken} = token
+            userDetails(accessToken.token).then(r => {
+                ElNotification.success({message: r})
+                console.log(r)
+            }).catch(e => {
+                ElMessage.error({message: e})
+            })
         }
     }
 }

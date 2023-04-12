@@ -1,29 +1,33 @@
 import axios from 'axios'
 import jwtSubject from "../utils/JwtSubject.js";
+import {multipartDataHeader} from "./Apis.js";
+import {ElNotification} from "element-plus";
+import router from "../router/router.js";
 
-export const website = "https://twinkler.caikun.site/"
+const SUCCESS = 0
+const TOKEN_EXPIRED = 1005
+
+let isRefreshing = false
+let requests = []
+
+export const devWebsite = "http://localhost:8080"
+export const proWebsite = "https://twinkler.caikun.site"
 
 const service = axios.create({
-    baseURL: website,
+    baseURL: devWebsite,
 })
 
 /**
- * 全局请求拦截器，Token过期时先请求刷新Token，用户无感
+ * 全局请求拦截器，为每个请求的请求头添加Token，如果Token存在的话
  */
-const requestInterceptor = service.interceptors.request.use(
+service.interceptors.request.use(
     config => {
-        if (!jwtSubject.isAvailable()) {
-            refreshDispatcher(jwtSubject.refreshToken()).then(r => {
-                jwtSubject.save(r)
-                console.log("token refreshed")
-                return config
-            }).catch(e => {
-                return Promise.reject("Token已过期：" + e)
-            })
+        console.log(config)
+        if (jwtSubject.isAvailable()) {
+            const {accessToken} = jwtSubject.obtainDetails()
+            config.headers.token = accessToken.token
         }
         return config
-    }, error => {
-        console.log(error)
     }
 )
 
@@ -32,13 +36,36 @@ const requestInterceptor = service.interceptors.request.use(
  */
 service.interceptors.response.use(
     response => {
-        //请求响应成功时只有业务代码为0才返回成功后结果
-        if (response.status === 200) {
-            const data = response.data
-            if (data.code === 0) return data.data; else return Promise.reject(data.message)
-        } else {
-            return Promise.reject(response.data)
+        const request = response.config
+        const data = response.data
+        //业务响应Token过期时
+        if (data.code === TOKEN_EXPIRED) {
+            if (!isRefreshing) {
+                isRefreshing = true
+                const {refreshToken} = jwtSubject.obtainDetails()
+                //请求刷新Token
+                return refresh(refreshToken.token).then(r => {
+                    jwtSubject.save(r)
+                    requests.forEach(q => q())
+                    requests = []
+                    return service(request)
+                }).catch(e => {
+                    console.log(e)
+                    router.push({name: "login"}).then(() => {
+                        ElNotification.info({message: "认证信息失效，请重新登录"})
+                    })
+                }).finally(() => {
+                    isRefreshing = false
+                })
+            } else {
+                return new Promise((resolve) => {
+                    requests.push(() => {
+                        resolve(service(request))
+                    })
+                })
+            }
         }
+        if (data.code === SUCCESS) return data.data; else return Promise.reject(data.message)
     },
     error => {
         return Promise.reject(error)
@@ -50,14 +77,15 @@ service.interceptors.response.use(
  *
  * @param token refreshToken
  */
-function refreshDispatcher(token) {
+function refresh(token) {
     return service({
         method: "POST",
         url: "/account/refresh",
         data: {
             "token": token
-        }
-    }).interceptors.request.eject(requestInterceptor)
+        },
+        headers: multipartDataHeader
+    })
 }
 
 export default service

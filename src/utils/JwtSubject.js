@@ -22,8 +22,11 @@ class JwtSubject {
 
     isAvailable() {
         const subject = this.obtainDetails()
-        const {accessToken} = subject
-        return accessToken.expiration >= new Date().getTime();
+        if (subject) {
+            const {accessToken} = subject
+            return accessToken.expiration >= new Date().getTime();
+        }
+        return false
     }
 
     refreshToken() {

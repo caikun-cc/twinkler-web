@@ -6,8 +6,11 @@
         <div class="right">
             <div class="menu-container">
                 <ul>
-                    <li v-for="item in menus">
-                        <span onmouseover="this.style.cursor=' hand'" @click="navigationTo(item.route)">{{ item.title }}</span>
+                    <li v-for="item in menu">
+                        <span onmouseover="this.style.cursor=' hand'"
+                              @click="navigationTo(item.route)">
+                            {{ item.title }}
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -21,6 +24,7 @@
 
 <script>
 import router from "../router/router.js";
+import jwtSubject from "../utils/JwtSubject.js";
 
 export default {
     name: "AppBar",
@@ -30,6 +34,15 @@ export default {
                 {title: "上传", route: "upload"},
                 {title: "登录", route: "login"}
             ]
+        }
+    },
+    computed: {
+        menu() {
+            if (jwtSubject.obtainDetails()) {
+                console.log("pop")
+                this.menus.pop()
+            }
+            return this.menus
         }
     },
     methods: {
