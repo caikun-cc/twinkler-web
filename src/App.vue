@@ -1,7 +1,9 @@
 <template>
-    <transition name="el-fade-in">
-        <router-view/>
-    </transition>
+    <router-view v-slot="{ Component }">
+        <transition name="el-fade-in">
+            <component :is="Component"/>
+        </transition>
+    </router-view>
 </template>
 
 <script setup>

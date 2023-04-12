@@ -1,5 +1,7 @@
 import service from "./HttpClient.js"
 
+const multipartDataHeader = {"Content-Type": "multipart/form-data"}
+
 /**
  * 发送注册验证码
  *
@@ -15,12 +17,24 @@ export function sendEmailVerificationCode(email) {
     })
 }
 
+export function login(email, password) {
+    return service({
+        method: "POST",
+        url: "/account/login",
+        data: {
+            "email": email,
+            "password": password
+        },
+        headers: multipartDataHeader
+    })
+}
+
 export function userRegister(user) {
     return service({
         method: "POST",
         url: "/account/register",
         data: user,
-        headers: {'Content-Type': 'multipart/form-data'}
+        headers: multipartDataHeader
     })
 }
 

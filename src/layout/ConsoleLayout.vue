@@ -46,7 +46,11 @@
 
             </el-header>
             <el-main>
-                <router-view/>
+                <router-view v-slot="{ Component }">
+                    <transition name="el-zoom-in-center">
+                        <component :is="Component"/>
+                    </transition>
+                </router-view>
             </el-main>
         </el-container>
     </el-container>
