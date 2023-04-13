@@ -29,9 +29,17 @@ class JwtSubject {
         return false
     }
 
-    refreshToken() {
+    /**
+     * 获取AccessToken
+     * @returns {string|string}
+     */
+    getToken() {
         const subject = this.obtainDetails()
-        return subject.refreshToken
+        if (subject) {
+            const {accessToken} = subject
+            return accessToken.token
+        }
+        return "null"
     }
 }
 

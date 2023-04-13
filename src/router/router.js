@@ -9,6 +9,7 @@ import Home from "../components/console/Home.vue";
 import IndexContainer from "../components/index/IndexContainer.vue";
 import Login from "../components/account/Login.vue";
 import Register from "../components/account/Register.vue";
+import jwtSubject from "../utils/JwtSubject.js";
 
 /**
  * 主页
@@ -57,7 +58,7 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
     if (to.matched.some(r => r.meta.isAuth)) {
-        if (sessionStorage.getItem('isLogged')) {
+        if (jwtSubject.obtainDetails()) {
             next()
         } else {
             next({name: 'login'})

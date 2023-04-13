@@ -14,7 +14,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="user-container" v-show="true" @click="navigationTo('console')">
+            <div class="user-container" v-show="isLogged" @click="jumpToConsole">
                 <img src="https://cloud.caikun.site/f/76sn/avatar.jpg" alt="">
                 <span>天上的星</span>
             </div>
@@ -30,17 +30,22 @@ export default {
     name: "AppBar",
     data() {
         return {
-            menus: [
-                {title: "上传", route: "upload"},
-                {title: "登录", route: "login"}
-            ]
+            menus: [],
+            isLogged: false,
         }
     },
     computed: {
         menu() {
-            if (jwtSubject.obtainDetails()) {
-                console.log("pop")
-                this.menus.pop()
+            console.log(jwtSubject.isAvailable())
+            if (!jwtSubject.obtainDetails()) {
+                this.menus = [
+                    {title: "上传", route: "upload"},
+                    {title: "登录", route: "login"}
+                ]
+                this.isLogged = false
+            } else {
+                this.menus = [{title: "上传", route: "upload"}]
+                this.isLogged = true
             }
             return this.menus
         }
@@ -48,7 +53,12 @@ export default {
     methods: {
         navigationTo(name) {
             router.push({name})
-        }
+        },
+        jumpToConsole() {
+            if (jwtSubject.obtainDetails()) {
+                router.push({name: "console"})
+            }
+        },
     }
 }
 </script>

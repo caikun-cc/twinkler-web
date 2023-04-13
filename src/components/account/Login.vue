@@ -44,6 +44,7 @@ export default {
                 login(this.email, this.password).then(r => {
                     jwtSubject.save(r)
                     ElNotification.success({message: "登录成功"})
+                    router.push({name: "index"})
                 }).catch(e => {
                     console.log("failure: ")
                     console.log(e)
@@ -55,8 +56,6 @@ export default {
         },
         test() {
             let token = jwtSubject.obtainDetails()
-            // console.log(token)
-            // console.log(jwtSubject.isAvailable())
             const {accessToken} = token
             userDetails(accessToken.token).then(r => {
                 ElNotification.success({message: r})
