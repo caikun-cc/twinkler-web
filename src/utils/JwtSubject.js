@@ -31,7 +31,7 @@ class JwtSubject {
 
     /**
      * 获取AccessToken
-     * @returns {string|string}
+     * @returns {string|null}
      */
     getToken() {
         const subject = this.obtainDetails()
@@ -39,7 +39,7 @@ class JwtSubject {
             const {accessToken} = subject
             return accessToken.token
         }
-        return "null"
+        return null
     }
 }
 

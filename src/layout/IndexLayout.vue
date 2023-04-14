@@ -1,17 +1,12 @@
 <template>
-    <div class="index-root">
+    <div class="index-layout">
         <AppBar class="appbar"/>
-        <div class="index-container">
-<!--            <router-view v-slot="{ Component }">-->
-<!--                <transition name="el-fade-in-linear">-->
-<!--                    <component :is="Component"/>-->
-<!--                </transition>-->
-<!--            </router-view>-->
-            <router-view v-slot="{ Component }">
-                <transition name="fade">
-                    <component :is="Component" />
-                </transition>
-            </router-view>
+        <div>
+            <transition name="el-zoom-in-center">
+                <keep-alive>
+                    <router-view/>
+                </keep-alive>
+            </transition>
         </div>
     </div>
 </template>
@@ -28,12 +23,9 @@ export default {
 
 <style scoped>
 
-.index-root {
+.index-layout {
     height: 100vh;
-    background: rgb(24, 24, 24);
+    background: rgb(20, 20, 20);
 }
 
-.index-container {
-    width: 100%;
-}
 </style>

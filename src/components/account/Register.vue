@@ -34,7 +34,7 @@
                         placeholder="密码"/>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" style="width: 100%" @click="submit()">注册</el-button>
+                <el-button type="primary" :loading="isSubmitting" style="width: 100%" @click="submit()">注册</el-button>
             </el-form-item>
         </el-form>
         <div class="bottom-container">
@@ -68,6 +68,7 @@ export default {
                 time: 60,
                 disabled: false,
             },
+            isSubmitting: false
         }
     },
     methods: {
@@ -95,10 +96,13 @@ export default {
         submit() {
             if (Object.values(this.user).indexOf(null)) {
                 if (this.verifyNick() && this.verifyEmail() && this.verifyPassword()) {
+                    this.isSubmitting = true
                     userRegister(this.user).then(() => {
                         ElNotification.success({message: "注册成功"})
+                        this.isSubmitting = false
                         this.router().push({name: "login"})
                     }).catch(e => {
+                        this.isSubmitting = false
                         ElMessage.error({message: "注册失败：" + e})
                     })
                 }
