@@ -2,11 +2,7 @@
     <div class="index-layout">
         <AppBar class="appbar"/>
         <div>
-            <transition name="el-zoom-in-center">
-                <keep-alive>
-                    <router-view/>
-                </keep-alive>
-            </transition>
+            <router-view/>
         </div>
     </div>
 </template>

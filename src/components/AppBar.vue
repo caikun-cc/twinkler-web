@@ -36,7 +36,6 @@ export default {
     },
     computed: {
         menu() {
-            console.log(jwtSubject.isAvailable())
             if (!jwtSubject.obtainDetails()) {
                 this.menus = [
                     {title: "上传", route: "upload"},

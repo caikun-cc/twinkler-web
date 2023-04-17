@@ -1,11 +1,7 @@
 <template>
     <div class="account-root">
         <div class="account-container">
-            <router-view v-slot="{ Component }">
-                <transition name="el-zoom-in-center">
-                    <component :is="Component"/>
-                </transition>
-            </router-view>
+            <router-view/>
         </div>
     </div>
 </template>

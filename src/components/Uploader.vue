@@ -1,17 +1,20 @@
 <template>
     <div class="upload-root">
         <p>Image Upload</p>
-        <el-card class="upload-container">
-            <el-upload
-                    class="avatar-uploader"
-                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                    :show-file-list="false">
-                <img v-if="false" class="avatar" alt="" src=""/>
-                <el-icon v-else class="avatar-uploader-icon">
-                    <Plus/>
-                </el-icon>
-            </el-upload>
+        <el-card class="upload-container" @click="choose">
+            <input v-show="false"
+                   ref="choiceInput"
+                   type="file"
+                   :multiple="true"
+                   id="open-choice"
+                   @change="choiceChanged($event)">
+            <img src="../assets/icon-upload.png" alt="" class="upload-icon" style="width: 56px;height: 56px">
         </el-card>
+        <div class="selected-images" v-show="images.length>0">
+            <div v-for="item in images">
+                <img :src="item" alt="" style="width: 56px;height: 56px">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -20,7 +23,29 @@ import {Plus} from "@element-plus/icons-vue";
 
 export default {
     name: "Uploader",
-    components: {Plus}
+    components: {Plus},
+    data() {
+        return {
+            images: []
+        }
+    },
+    methods: {
+        choose() {
+            this.$refs.choiceInput.dispatchEvent(new MouseEvent('click'))
+        },
+        choiceChanged(event) {
+            const files = event.target.files
+            console.log(files)
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                reader.onload = function (e) {
+                    const urlData = this.result;
+                    console.log(urlData)
+                };
+            }
+        },
+    }
 }
 </script>
 
@@ -41,6 +66,16 @@ export default {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 2px rgba(255, 255, 255, 0.5) solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 200px;
+}
+
+.selected-images {
+    margin-top: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px rgba(255, 255, 255, 0.5) solid;
 }
 </style>
