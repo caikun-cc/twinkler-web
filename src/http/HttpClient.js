@@ -22,7 +22,6 @@ const service = axios.create({
  */
 service.interceptors.request.use(
     config => {
-        console.log(config)
         if (jwtSubject.isAvailable()) {
             const {accessToken} = jwtSubject.obtainDetails()
             config.headers.token = accessToken.token

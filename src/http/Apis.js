@@ -38,12 +38,21 @@ export function userRegister(user) {
     })
 }
 
-export function userDetails(token) {
+export function getUserDetails() {
     return service({
         method: "GET",
         url: "/user/details",
-        headers: {
-            "token": token
+    })
+}
+
+//image/collection
+export function getImageList(pageNumber, pageSize) {
+    return service({
+        method: "GET",
+        url: "/image/collection",
+        params: {
+            "page": pageNumber,
+            "size": pageSize
         }
     })
 }

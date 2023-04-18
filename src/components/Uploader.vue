@@ -41,7 +41,7 @@ export default {
                 reader.readAsDataURL(files[i]);
                 reader.onload = function (e) {
                     const urlData = this.result;
-                    console.log(urlData)
+                    this.images.push(urlData)
                 };
             }
         },

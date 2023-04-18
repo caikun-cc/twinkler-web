@@ -1,5 +1,5 @@
 <template>
-    <el-container class="console-root">
+    <el-container style="height: 100vh;">
         <el-aside width="240px">
             <div class="logo-side-container"
                  @click="navigationTo('index')"
@@ -8,7 +8,7 @@
             </div>
             <el-menu default-active="console"
                      router
-                     class="nav-container">
+                     style="border: none">
                 <el-menu-item index="console" :route="{name:'console'}">
                     <el-icon>
                         <Compass/>
@@ -43,11 +43,8 @@
         </el-aside>
         <el-container style="background: #f5f6fa">
             <el-header style="background: white;height: 64px">
-                <el-page-header @back="router().back()">
-                    <template #content>
-                        <span class="text-large font-600 mr-3"> Title </span>
-                    </template>
-                </el-page-header>
+
+
             </el-header>
             <el-main>
                 <router-view v-slot="{ Component }">
@@ -83,14 +80,6 @@ export default {
 
 <style scoped>
 
-.console-root {
-    height: 100vh;
-}
-
-.nav-container {
-    border: none;
-}
-
 .logo-side-container {
     background: deepskyblue;
     height: 64px;
@@ -101,8 +90,8 @@ export default {
     color: white;
     font-weight: bold;
     font-size: 1.2rem;
-    letter-spacing: 3px;
-    text-align: center;
     display: block;
+    text-align: center;
+    letter-spacing: 3px;
 }
 </style>
