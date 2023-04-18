@@ -1,5 +1,4 @@
 import {createRouter, createWebHashHistory} from "vue-router";
-import jwtSubject from "../utils/JwtSubject.js";
 
 import IndexLayout from "../layout/IndexLayout.vue";
 import AccountLayout from "../layout/AccountLayout.vue";
@@ -14,6 +13,7 @@ import Galleries from "../components/console/Galleries.vue";
 import Albums from "../components/console/Albums.vue";
 import Member from "../components/console/Member.vue";
 import Settings from "../components/console/Settings.vue";
+import jwtDispatcher from "../utils/JwtDispatcher.js";
 
 /**
  * 主页
@@ -65,7 +65,7 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
     if (to.matched.some(r => r.meta.isAuth)) {
-        if (jwtSubject.obtainDetails()) {
+        if (jwtDispatcher.getJwtSubject()) {
             next()
         } else {
             next({name: 'login'})

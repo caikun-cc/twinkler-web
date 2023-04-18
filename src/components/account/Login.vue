@@ -22,9 +22,9 @@
 <script>
 
 import router from "../../router/router.js";
-import jwtSubject from "../../utils/JwtSubject.js";
 import {ElMessage, ElNotification} from "element-plus";
 import {login} from "../../http/Apis.js";
+import jwtDispatcher from "../../utils/JwtDispatcher.js";
 
 export default {
     name: "Login",
@@ -43,7 +43,7 @@ export default {
             if (this.email.trim().length > 0 && this.password.trim().length > 0) {
                 this.isSubmitting = true
                 login(this.email, this.password).then(r => {
-                    jwtSubject.save(r)
+                    jwtDispatcher.save(r)
                     this.isSubmitting = false
                     ElNotification.success({message: "登录成功"})
                     router.push({name: "index"})

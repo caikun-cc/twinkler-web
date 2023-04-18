@@ -1,8 +1,8 @@
 import axios from 'axios'
-import jwtSubject from "../utils/JwtSubject.js";
 import {multipartDataHeader} from "./Apis.js";
-import {ElNotification} from "element-plus";
+import {ElMessage, ElNotification} from "element-plus";
 import router from "../router/router.js";
+import jwtDispatcher from "../utils/JwtDispatcher.js";
 
 const SUCCESS = 0
 const TOKEN_EXPIRED = 1005
@@ -10,8 +10,8 @@ const TOKEN_EXPIRED = 1005
 let isRefreshing = false
 let requests = []
 
-export const devWebsite = "http://localhost:8080"
 export const proWebsite = "https://twinkler.caikun.site"
+export const devWebsite = "http://localhost:8080"
 
 const service = axios.create({
     baseURL: proWebsite,
@@ -22,8 +22,9 @@ const service = axios.create({
  */
 service.interceptors.request.use(
     config => {
-        if (jwtSubject.isAvailable()) {
-            const {accessToken} = jwtSubject.obtainDetails()
+        let jwtSubject = jwtDispatcher.getJwtSubject()
+        if (jwtSubject) {
+            const {accessToken} = jwtSubject
             config.headers.token = accessToken.token
         }
         return config
@@ -39,17 +40,19 @@ service.interceptors.response.use(
         const data = response.data
         //业务响应Token过期时
         if (data.code === TOKEN_EXPIRED) {
+            ElMessage.warning({message: "凭证过期，准备刷新！"})
             if (!isRefreshing) {
                 isRefreshing = true
-                const {refreshToken} = jwtSubject.obtainDetails()
+                const {refreshToken} = jwtDispatcher.getJwtSubject()
                 //请求刷新Token
                 return refresh(refreshToken.token).then(r => {
-                    jwtSubject.save(r)
+                    ElMessage.success("凭证刷新完成，继续请求！")
+                    jwtDispatcher.save(r)
                     requests.forEach(q => q())
                     requests = []
                     return service(request)
-                }).catch(e => {
-                    console.log(e)
+                }).catch(() => {
+                    ElMessage.error({message: "凭证刷新失败！"})
                     router.push({name: "login"}).then(() => {
                         ElNotification.info({message: "认证信息失效，请重新登录"})
                     })

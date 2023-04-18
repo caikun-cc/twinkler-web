@@ -8,36 +8,37 @@
             </div>
             <el-menu default-active="console"
                      router
-                     style="border: none">
+                     @select="onMenuSelected"
+                     class="nav-container">
                 <el-menu-item index="console" :route="{name:'console'}">
                     <el-icon>
                         <Compass/>
                     </el-icon>
-                    <span>首页</span>
+                    <span>{{ titles.get("console") }}</span>
                 </el-menu-item>
                 <el-menu-item index="galleries" :route="{name:'galleries'}">
                     <el-icon>
                         <PictureRounded/>
                     </el-icon>
-                    <span>图库</span>
+                    <span>{{ titles.get("galleries") }}</span>
                 </el-menu-item>
                 <el-menu-item index="albums" :route="{name:'albums'}">
                     <el-icon>
                         <Promotion/>
                     </el-icon>
-                    <span>相册</span>
+                    <span>{{ titles.get("albums") }}</span>
                 </el-menu-item>
                 <el-menu-item index="member" :route="{name:'member'}">
                     <el-icon>
                         <User/>
                     </el-icon>
-                    <span>个人</span>
+                    <span>{{ titles.get("member") }}</span>
                 </el-menu-item>
                 <el-menu-item index="settings" :route="{name:'settings'}">
                     <el-icon>
                         <Setting/>
                     </el-icon>
-                    <span>设置</span>
+                    <span>{{ titles.get("settings") }}</span>
                 </el-menu-item>
             </el-menu>
         </el-aside>
@@ -65,9 +66,22 @@ export default {
     name: "ConsoleLayout",
     components: {Setting, User, PictureRounded, Promotion, Compass},
     data() {
-        return {}
+        return {
+            titles: new Map(),
+            selected: "console"
+        }
+    },
+    mounted() {
+        this.titles.set("console", "首页")
+        this.titles.set("galleries", "图库")
+        this.titles.set("albums", "相册")
+        this.titles.set("member", "个人")
+        this.titles.set("settings", "设置")
     },
     methods: {
+        onMenuSelected(index) {
+            this.selected = index
+        },
         router() {
             return router
         },

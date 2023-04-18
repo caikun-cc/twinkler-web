@@ -14,9 +14,10 @@
                     </li>
                 </ul>
             </div>
+            <!-- 用户一登录头像部分 -->
             <div class="user-container" v-show="isLogged" @click="jumpToConsole">
-                <img src="https://cloud.caikun.site/f/76sn/avatar.jpg" alt="">
-                <span>天上的星</span>
+                <img :src="user.avatar" alt="">
+                <span>{{ user.nick }}</span>
             </div>
         </div>
     </div>
@@ -24,7 +25,9 @@
 
 <script>
 import router from "../router/router.js";
-import jwtSubject from "../utils/JwtSubject.js";
+import jwtDispatcher from "../utils/JwtDispatcher.js";
+import {getUserDetails} from "../http/Apis.js";
+import {ElMessage} from "element-plus";
 
 export default {
     name: "AppBar",
@@ -32,19 +35,34 @@ export default {
         return {
             menus: [],
             isLogged: false,
+            user: {
+                nick: "",
+                avatar: "https://cloud.caikun.site/f/kWfW/defaultAvatar.jpg",
+                id: 0,
+            }
+        }
+    },
+    mounted() {
+        let jwtUser = jwtDispatcher.getUserDetails()
+        if (jwtUser) {
+            this.user.id = jwtUser.id
+            this.user.avatar = jwtUser.avatar
+            this.user.nick = jwtUser.nick
+        } else {
+            this.loadUserDetails()
         }
     },
     computed: {
         menu() {
-            if (!jwtSubject.obtainDetails()) {
+            if (jwtDispatcher.getJwtSubject() != null) {
+                this.menus = [{title: "上传", route: "upload"}]
+                this.isLogged = true
+            } else {
                 this.menus = [
                     {title: "上传", route: "upload"},
                     {title: "登录", route: "login"}
                 ]
                 this.isLogged = false
-            } else {
-                this.menus = [{title: "上传", route: "upload"}]
-                this.isLogged = true
             }
             return this.menus
         }
@@ -53,11 +71,31 @@ export default {
         navigationTo(name) {
             router.push({name})
         },
+
+        /**
+         * 点击去管理后台
+         */
         jumpToConsole() {
-            if (jwtSubject.obtainDetails()) {
+            if (this.user.id !== 0) {
                 router.push({name: "console"})
+            } else {
+                this.loadUserDetails()
             }
         },
+        /**
+         * 获取登录用户信息
+         */
+        loadUserDetails() {
+            if (jwtDispatcher.getJwtSubject()) {
+                getUserDetails().then(r => {
+                    this.user.id = r.id
+                    this.user.avatar = r.avatar
+                    this.user.nick = r.nick
+                }).catch(e => {
+                    ElMessage.error({message: e})
+                })
+            }
+        }
     }
 }
 </script>
