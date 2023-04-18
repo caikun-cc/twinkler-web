@@ -1,11 +1,12 @@
 <template>
     <div class="galleries-container">
-        <div v-for="item in imagesSrc" class="galleries-item-box">
+        <div v-for="(item,index) in imagesSrc" class="galleries-item-box">
             <el-image class="galleries-image"
                       lazy
                       fit="cover"
                       :preview-src-list="imagesUrl"
-                      :src="item.links.url">
+                      :src="item.links.url"
+                      :initial-index="index">
                 <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                 </div>

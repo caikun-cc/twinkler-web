@@ -8,8 +8,8 @@
             </div>
             <el-menu default-active="console"
                      router
-                     @select="onMenuSelected"
-                     class="nav-container">
+                     style="border: none"
+                     @select="onMenuSelected">
                 <el-menu-item index="console" :route="{name:'console'}">
                     <el-icon>
                         <Compass/>
@@ -44,8 +44,7 @@
         </el-aside>
         <el-container style="background: #f5f6fa">
             <el-header style="background: white;height: 64px">
-
-
+                <ConsoleHeaderBar/>
             </el-header>
             <el-main>
                 <router-view v-slot="{ Component }">
@@ -61,10 +60,11 @@
 <script>
 import router from "../router/router.js";
 import {Compass, PictureRounded, Promotion, Setting, User} from "@element-plus/icons-vue";
+import ConsoleHeaderBar from "../components/ConsoleHeaderBar.vue";
 
 export default {
     name: "ConsoleLayout",
-    components: {Setting, User, PictureRounded, Promotion, Compass},
+    components: {ConsoleHeaderBar, Setting, User, PictureRounded, Promotion, Compass},
     data() {
         return {
             titles: new Map(),
