@@ -8,11 +8,12 @@
                    ref="choiceInput"
                    type="file"
                    id="open-choice"
+                   accept="image/*"
                    @change="choiceChanged($event)">
             <img src="../assets/icon-upload.png" alt="" class="upload-icon" style="width: 56px;height: 56px">
         </el-card>
         <div class="selected-container" v-show="selectedImages.length > 0">
-            <div class="selected-image-box" v-for="item in selectedImages">
+            <div class="selected-image-box" v-for="(item,index) in selectedImages">
                 <div style="display: flex">
                     <el-image :src="item.image" alt="" style="width: 56px;height: 56px;border-radius: 12px;"/>
                     <div class="image-info-box">
@@ -21,8 +22,8 @@
                     </div>
                 </div>
                 <div class="selected-actions-box">
-                    <el-button size="large" :icon="CloseBold" circle/>
-                    <el-button size="large" :icon="UploadFilled" circle/>
+                    <el-button size="large" :icon="CloseBold" circle @click="remove(index)"/>
+                    <el-button size="large" :icon="UploadFilled" circle @click="imageUpload(item.image)"/>
                 </div>
             </div>
         </div>
@@ -32,7 +33,8 @@
 <script>
 
 import {CloseBold, UploadFilled} from "@element-plus/icons-vue";
-import {getImageCount} from "../http/Apis.js";
+import {getImageCount, upload} from "../http/Apis.js";
+import {ElMessage, ElNotification} from "element-plus";
 
 export default {
     name: "Uploader",
@@ -63,11 +65,13 @@ export default {
         choiceChanged(event) {
             const files = event.target.files
             for (let i = 0; i < files.length; i++) {
-                const f = files[i]
                 const reader = new FileReader()
+                const f = files[i]
+                const src = window.URL.createObjectURL(f)
                 reader.readAsDataURL(f)
                 reader.onload = (element => {
                     this.selectedImages.push({
+                        src: src,
                         image: element.target.result,
                         name: f.name,
                         size: parseInt(f.size / 1000) + "kb",
@@ -75,7 +79,19 @@ export default {
                     })
                 })
             }
+            console.log(this.selectedImages)
         },
+        remove(index) {
+            this.selectedImages.splice(index, 1)
+            console.log(this.selectedImages)
+        },
+        imageUpload(image) {
+            upload(image).then(r => {
+                ElNotification.success({message: r.links.url})
+            }).catch(e => {
+                ElMessage.error({message: e})
+            })
+        }
     }
 }
 </script>
