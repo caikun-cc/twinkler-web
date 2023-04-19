@@ -57,3 +57,10 @@ export function getImageList(pageNumber, pageSize) {
     })
 }
 
+export function getImageCount() {
+    return service({
+        method: "GET",
+        url: "/comptroller/image/counts",
+    })
+}
+
