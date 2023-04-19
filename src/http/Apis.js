@@ -66,6 +66,7 @@ export function getImageCount() {
 
 export function upload(image) {
     const data = new FormData()
+    console.log(image)
     data.append("image", image)
     console.log(image)
     return service({

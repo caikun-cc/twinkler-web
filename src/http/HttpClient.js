@@ -11,10 +11,10 @@ let isRefreshing = false
 let requests = []
 
 export const proWebsite = "https://twinkler.caikun.site"
-export const devWebsite = "http://localhost:8080"
+export const devWebsite = "http://192.168.1.183:8080"
 
 const service = axios.create({
-    baseURL: devWebsite,
+    baseURL: proWebsite,
 })
 
 /**
