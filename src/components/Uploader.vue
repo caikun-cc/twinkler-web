@@ -15,7 +15,7 @@
         <div class="selected-container" v-show="selectedImages.length > 0">
             <div class="selected-image-box" v-for="(item,index) in selectedImages">
                 <div style="display: flex">
-                    <el-image :src="item.image" alt="" style="width: 56px;height: 56px;border-radius: 12px;"/>
+                    <el-image :src="item.src" alt="" style="width: 56px;height: 56px;border-radius: 12px;"/>
                     <div class="image-info-box">
                         <p class="image-name">{{ item.name }}</p>
                         <p class="image-info">{{ item.size }}&nbsp;&nbsp;&nbsp;{{ item.status }}</p>
@@ -24,8 +24,11 @@
                 </div>
                 <div class="selected-actions-box">
                     <el-button size="large" :icon="CloseBold" circle @click="remove(index)"/>
-                    <el-button size="large" :icon="UploadFilled" circle @click="imageUpload(index)" v-show="UploadButton"/>
-
+                    <el-button :icon="UploadFilled"
+                               size="large"
+                               circle
+                               @click="imageUpload(index)"
+                               v-if="item.status"/>
                 </div>
             </div>
         </div>
@@ -53,8 +56,6 @@ export default {
         return {
             selectedImages: [],
             count: 0,
-            files: [],
-            UploadButton: true,
         }
     },
     mounted() {
@@ -67,37 +68,32 @@ export default {
             this.$refs.choiceInput.dispatchEvent(new MouseEvent('click'))
         },
         choiceChanged(event) {
-            this.UploadButton = true;
             const files = event.target.files;
-            this.files.push(files);
             for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader()
                 const f = files[i]
                 const src = window.URL.createObjectURL(f)
-                reader.readAsDataURL(f)
-                reader.onload = (element => {
-                    this.selectedImages.push({
-                        src: src,
-                        image: element.target.result,
-                        name: f.name,
-                        size: parseInt(f.size / 1000) + "kb",
-                        status: '等待上传',
-                        index: i
-                    })
+                this.selectedImages.push({
+                    progress: 0,
+                    src: src,
+                    image: f,
+                    name: f.name,
+                    size: parseInt(f.size / 1000) + "kb",
+                    status: '等待上传',
                 })
             }
-            console.log(this.selectedImages)
         },
         remove(index) {
-            this.UploadButton = true;
             this.selectedImages.splice(index, 1)
             console.log(this.selectedImages)
         },
         imageUpload(index) {
-            const image = this.files[index][0];
-
-            upload(image).then(r => {
-                this.UploadButton = false;
+            const image = this.selectedImages[index].image
+            upload(image, (progress) => {
+                if (progress.lengthComputable){
+                    let p = progress.loaded / progress.total * 100
+                    console.log(p)
+                }
+            }).then(r => {
                 this.selectedImages[index].status = '上传成功';
                 ElNotification.success({message: r.links.url})
             }).catch(e => {

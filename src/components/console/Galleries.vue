@@ -46,6 +46,7 @@ export default {
 <style scoped>
 .galleries-container {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .galleries-item-box {
@@ -53,8 +54,8 @@ export default {
 }
 
 .galleries-image {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
     border-radius: 5px;
     box-shadow: -2px 2px 30px 1px rgba(0, 0, 0, 0.2);
     background: white;

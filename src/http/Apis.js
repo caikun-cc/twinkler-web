@@ -64,15 +64,14 @@ export function getImageCount() {
     })
 }
 
-export function upload(image) {
+export function upload(image, onProgressChange) {
     const data = new FormData()
-    console.log(image)
     data.append("image", image)
-    console.log(image)
     return service({
         method: "POST",
         url: "/upload",
         data: data,
+        onUploadProgress: onProgressChange,
         headers: multipartDataHeader,
     })
 }

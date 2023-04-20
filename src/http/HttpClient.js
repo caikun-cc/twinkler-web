@@ -46,7 +46,7 @@ service.interceptors.response.use(
                 const {refreshToken} = jwtDispatcher.getJwtSubject()
                 //请求刷新Token
                 return refresh(refreshToken.token).then(r => {
-                    ElMessage.success("凭证刷新完成，继续请求！")
+                    ElMessage.success("刷新完成，继续请求！")
                     jwtDispatcher.save(r)
                     requests.forEach(q => q())
                     requests = []
