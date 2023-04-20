@@ -13,25 +13,30 @@
       <img src="../assets/icon-upload.png" alt="" class="upload-icon" style="width: 56px;height: 56px">
     </el-card>
     <div class="selected-container" v-show="selectedImages.length > 0">
-      <div v-for="(item,index) in selectedImages">
-        <div class="selected-image-box" :style="{ width: progress + '%' }">
-        <div style="display: flex">
-          <el-image :src="item.src" alt="" style="width: 56px;height: 56px;border-radius: 12px;"/>
-          <div class="image-info-box">
-            <p class="image-name">{{ item.name }}</p>
-            <p class="image-info">{{ item.size }}&nbsp;&nbsp;&nbsp;{{ item.status }}</p>
-            <div id="progress" style="background-color: red;"></div>
+      <div v-for="(item,index) in selectedImages" :key="index">
+
+        <div class="selected-image-box">
+          <div class="progress">
+            <div :style="{ width: item.progress + '%' }"></div>
+          </div>
+          <div style="display: flex;width: max-content;">
+            <el-image :src="item.src" alt="" style="width: 56px;height: 56px;border-radius: 12px;"/>
+            <div class="image-info-box">
+              <p class="image-name">{{ item.name }}</p>
+              <p class="image-info">{{ item.size }}&nbsp;&nbsp;&nbsp;{{ item.status }}</p>
+            </div>
+          </div>
+          <div class="selected-actions-box" style="width: max-content;">
+            <el-button size="large" :icon="CloseBold" circle @click="remove(index)"/>
+            <el-button :icon="UploadFilled"
+                       size="large"
+                       circle
+                       @click="imageUpload(index)"
+                       v-if="item.status"/>
           </div>
         </div>
-        <div class="selected-actions-box">
-          <el-button size="large" :icon="CloseBold" circle @click="remove(index)"/>
-          <el-button :icon="UploadFilled"
-                     size="large"
-                     circle
-                     @click="imageUpload(index)"
-                     v-if="item.status"/>
-        </div>
-      </div>
+
+
       </div>
     </div>
   </div>
@@ -59,7 +64,6 @@ export default {
       selectedImages: [],
       count: 0,
       uploading: false,
-      progress: 0
     }
   },
   mounted() {
@@ -95,10 +99,10 @@ export default {
       const image = this.selectedImages[index].image;
       this.uploading = true;
       upload(image, progressEvent => {
-        this.progress = Math.round(
+        this.selectedImages[index].progress = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
         );
-        console.log(this.progress)
+
       }).then(r => {
         this.selectedImages[index].status = '上传成功';
         ElNotification.success({message: r.links.url})
@@ -148,6 +152,19 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.progress div {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.2);
   transition: width 0.5s ease-in-out;
