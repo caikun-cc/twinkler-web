@@ -36,6 +36,17 @@
                 </div>
             </div>
         </div>
+        <div class="links-container">
+            <div id="link-tables">
+                <el-tabs v-model="link" @tab-click="handleClick">
+                    <div>
+                        <el-tab-pane label="URL" name="url">{{ url }}</el-tab-pane>
+                        <el-tab-pane label="HTML" name="html">{{ HTML }}</el-tab-pane>
+                        <el-tab-pane label="Markdown" name="md">{{ Markdown }}</el-tab-pane>
+                    </div>
+                </el-tabs>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -60,6 +71,7 @@ export default {
         return {
             selectedImages: [],
             count: 0,
+            link: null,
         }
     },
     mounted() {
@@ -104,6 +116,9 @@ export default {
                 this.selectedImages[index].status = '上传失败';
                 ElMessage.error({message: e})
             })
+        },
+        handleClick(tab, event) {
+            console.log(tab, event);
         }
     }
 }
@@ -113,7 +128,7 @@ export default {
 .upload-root {
     margin: auto;
     width: 1000px;
-    padding-top: 56px;
+    padding-top: 20px;
 }
 
 .upload-root > p {
@@ -184,4 +199,12 @@ export default {
     align-items: center;
     padding-right: 10px;
 }
+
+.links-container {
+    margin-top: 10px;
+    background: white;
+    padding: 0 20px 15px 20px;
+    border-radius: 5px;
+}
+
 </style>
