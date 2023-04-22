@@ -1,11 +1,14 @@
 <template>
     <div class="console-bar-root">
-        <div class="console-bar-left-box">
+        <div class="console-bar-box-l">
             <el-page-header @back="goBack">
                 <template #content>
-                    <span class="text-large font-600 mr-3"> Title </span>
+                    <span class="text-large font-600 mr-3"> {{ title }} </span>
                 </template>
             </el-page-header>
+        </div>
+        <div class="console-bar-box-r">
+            <el-avatar :src="avatar"></el-avatar>
         </div>
     </div>
 </template>
@@ -22,13 +25,15 @@ export default {
         }
     },
     props: {
-        title: String
+        title: String,
+        id: Number,
+        avatar: String
     },
     data() {
         return {}
     },
     methods: {
-        goBack(){
+        goBack() {
             router.back()
         }
     }
@@ -39,10 +44,16 @@ export default {
 .console-bar-root {
     height: 100%;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.console-bar-left-box {
+.console-bar-box-l {
     display: flex;
     align-items: center;
+}
+
+.console-bar-box-r {
+
 }
 </style>

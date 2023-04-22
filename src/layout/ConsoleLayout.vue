@@ -44,7 +44,9 @@
         </el-aside>
         <el-container style="background: #f5f6fa">
             <el-header style="background: white;height: 64px">
-                <ConsoleHeaderBar/>
+                <ConsoleHeaderBar :avatar="avatar"
+                                  :id="id"
+                                  :title="titles.get(selected)"/>
             </el-header>
             <el-main>
                 <router-view v-slot="{ Component }">
@@ -61,6 +63,7 @@
 import router from "../router/router.js";
 import {Compass, PictureRounded, Promotion, Setting, User} from "@element-plus/icons-vue";
 import ConsoleHeaderBar from "../components/ConsoleHeaderBar.vue";
+import {getUserDetails} from "../http/Apis.js";
 
 export default {
     name: "ConsoleLayout",
@@ -68,7 +71,9 @@ export default {
     data() {
         return {
             titles: new Map(),
-            selected: "console"
+            selected: "console",
+            id: 0,
+            avatar: "",
         }
     },
     mounted() {
@@ -77,6 +82,7 @@ export default {
         this.titles.set("albums", "相册")
         this.titles.set("member", "个人")
         this.titles.set("settings", "设置")
+        this.loadUserDetails()
     },
     methods: {
         onMenuSelected(index) {
@@ -87,6 +93,14 @@ export default {
         },
         navigationTo(name) {
             router.push({name})
+        },
+        loadUserDetails() {
+            getUserDetails().then(r => {
+                this.id = r.id
+                this.avatar = r.avatar
+            }).catch(e => {
+                router.push({name: "login"})
+            })
         }
     }
 }

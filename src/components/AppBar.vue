@@ -15,7 +15,7 @@
                 </ul>
             </div>
             <!-- 用户一登录头像部分 -->
-            <div class="user-container" v-show="isLogged" @click="jumpToConsole">
+            <div class="user-container" v-show="isLogged" @click="jumpToConsole" v-loading.fullscreen.lock="fullscreenLoading">
                 <img :src="user.avatar" alt="">
                 <span>{{ user.nick }}</span>
             </div>
@@ -28,6 +28,7 @@ import router from "../router/router.js";
 import jwtDispatcher from "../utils/JwtDispatcher.js";
 import {getUserDetails} from "../http/Apis.js";
 import {ElMessage} from "element-plus";
+import {refresh} from "../http/HttpClient.js";
 
 export default {
     name: "AppBar",
@@ -39,7 +40,8 @@ export default {
                 nick: "",
                 avatar: "https://cloud.caikun.site/f/kWfW/defaultAvatar.jpg",
                 id: 0,
-            }
+            },
+            fullscreenLoading: false
         }
     },
     mounted() {
@@ -77,10 +79,17 @@ export default {
          */
         jumpToConsole() {
             if (this.user.id !== 0) {
-                router.push({name: "console"})
-            } else {
-                this.loadUserDetails()
-            }
+                if (!jwtDispatcher.isAvailable()) {
+                    const {refreshToken} = jwtDispatcher.getJwtSubject()
+                    this.fullscreenLoading = true
+                    refresh(refreshToken).then(r => {
+                        jwtDispatcher.save(r)
+                        router.push({name: "console"})
+                    }).catch(e => {
+                        router.push({name: "login"})
+                    })
+                } else router.push({name: "console"})
+            } else router.push({name: "login"})
         },
         /**
          * 获取登录用户信息

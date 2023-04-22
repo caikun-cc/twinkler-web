@@ -14,7 +14,7 @@ export const proWebsite = "https://twinkler.caikun.site"
 export const devWebsite = "http://192.168.1.183:8080"
 
 const service = axios.create({
-    baseURL: devWebsite,
+    baseURL: proWebsite,
 })
 
 /**
@@ -79,7 +79,7 @@ service.interceptors.response.use(
  *
  * @param token refreshToken
  */
-function refresh(token) {
+export function refresh(token) {
     return service({
         method: "POST",
         url: "/account/refresh",
