@@ -15,7 +15,8 @@
                 </ul>
             </div>
             <!-- 用户一登录头像部分 -->
-            <div class="user-container" v-show="isLogged" @click="jumpToConsole" v-loading.fullscreen.lock="fullscreenLoading">
+            <div class="user-container" v-show="isLogged" @click="jumpToConsole"
+                 v-loading.fullscreen.lock="fullscreenLoading">
                 <img :src="user.avatar" alt="">
                 <span>{{ user.nick }}</span>
             </div>
@@ -83,9 +84,11 @@ export default {
                     const {refreshToken} = jwtDispatcher.getJwtSubject()
                     this.fullscreenLoading = true
                     refresh(refreshToken).then(r => {
+                        ElMessage.success({message: "已刷新！"})
                         jwtDispatcher.save(r)
                         router.push({name: "console"})
                     }).catch(e => {
+                        ElMessage.error({message: "登陆失败: " + e.message})
                         router.push({name: "login"})
                     })
                 } else router.push({name: "console"})

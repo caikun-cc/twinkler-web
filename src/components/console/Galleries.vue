@@ -8,13 +8,11 @@
             <div v-for="(item,index) in imagesSrc" class="galleries-box-item">
                 <el-image class="galleries-image"
                           fit="cover"
+                          lazy
                           :preview-src-list="imagesUrl"
                           :src="item.links.url"
-                          :initial-index="index">
-                    <div slot="error" class="image-slot">
-                        <i class="el-icon-picture-outline"></i>
-                    </div>
-                </el-image>
+                          :initial-index="index"/>
+                <div class="galleries-image-options"></div>
             </div>
         </div>
         <el-drawer v-model="drawerIsOpen" title="Upload Images" direction="ttb">
