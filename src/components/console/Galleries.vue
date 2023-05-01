@@ -9,13 +9,20 @@
                 <el-image class="galleries-image"
                           fit="cover"
                           :preview-src-list="imagesUrl"
-                          :src="item.links.url"
+                          :src="item.links.thumbnail"
                           :initial-index="index">
                     <div slot="error" class="image-slot">
                         <i class="el-icon-picture-outline"></i>
                     </div>
                 </el-image>
             </div>
+        </div>
+        <el-divider/>
+        <div style="text-align: center" v-show="isHasMore && !isLoading">
+            <el-button @click="loadMore">加载更多</el-button>
+        </div>
+        <div style="text-align: center" v-show="!isHasMore && !isLoading">
+            <p>没有更多了！</p>
         </div>
         <el-drawer v-model="drawerIsOpen" title="Upload Images" direction="ttb">
             <SimpleUploader style="text-align: center"/>
@@ -42,20 +49,43 @@ export default {
             drawerIsOpen: false,
             imagesSrc: [],
             imagesUrl: [],
+            isHasMore: true,
+            isLoading: false,
+            pageNumber: 1,
         }
     },
     mounted() {
-        getImageList(1, 30).then(r => {
-            const {collection} = r
-            this.imagesSrc = collection
-            collection.map(element => {
-                this.imagesUrl.push(element.links.url)
+        this.fetchImagesByPager(this.pageNumber)
+    },
+    methods: {
+        /**
+         * 分页加载图片
+         * @param pageNumber
+         */
+        fetchImagesByPager(pageNumber) {
+            this.isLoading = true
+            getImageList(pageNumber, 2).then(r => {
+                const {collection} = r
+                const {last} = r
+                this.isHasMore = !last
+                collection.map(element => {
+                    this.imagesSrc.push(element)
+                    this.imagesUrl.push(element.links.url)
+                })
+                console.log(this.imagesUrl)
+                this.isLoading = false
+            }).catch(e => {
+                console.log(e)
+                ElMessage.error({message: e})
+                this.isLoading = false
             })
-            console.log(this.imagesUrl)
-        }).catch(e => {
-            console.log(e)
-            ElMessage.error({message: e})
-        })
+        },
+        loadMore() {
+            if (!this.isLoading) {
+                this.pageNumber++
+                this.fetchImagesByPager(this.pageNumber)
+            }
+        }
     }
 }
 </script>

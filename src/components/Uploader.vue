@@ -12,8 +12,8 @@
                    @change="choiceChanged($event)">
             <img src="../assets/icon-upload.png" alt="" class="upload-icon" style="width: 56px;height: 56px">
         </el-card>
-        <div class="selected-container" v-show="selectedImages.length > 0">
-            <div v-for="(item,index) in selectedImages" :key="index">
+        <div class="selected-container" v-show="selectedList.length > 0">
+            <div v-for="(item,index) in selectedList" :key="index">
                 <div class="selected-image-box">
                     <div class="progress">
                         <div :style="{ width: item.progress + '%'}"></div>
@@ -36,17 +36,17 @@
                 </div>
             </div>
         </div>
-        <div class="links-container">
-            <div id="link-tables">
-                <el-tabs v-model="link" @tab-click="handleClick">
-                    <div>
-                        <el-tab-pane label="URL" name="url">{{ url }}</el-tab-pane>
-                        <el-tab-pane label="HTML" name="html">{{ HTML }}</el-tab-pane>
-                        <el-tab-pane label="Markdown" name="md">{{ Markdown }}</el-tab-pane>
-                    </div>
-                </el-tabs>
-            </div>
-        </div>
+        <!--<div class="links-container" v-show="this.uploadedList.length > 0">-->
+        <!--    <div id="link-tables">-->
+        <!--        <el-tabs v-model="link">-->
+        <!--            <div>-->
+        <!--                <el-tab-pane label="URL" name="url">{{ url }}</el-tab-pane>-->
+        <!--                <el-tab-pane label="HTML" name="html">{{ HTML }}</el-tab-pane>-->
+        <!--                <el-tab-pane label="Markdown" name="md">{{ Markdown }}</el-tab-pane>-->
+        <!--            </div>-->
+        <!--        </el-tabs>-->
+        <!--    </div>-->
+        <!--</div>-->
     </div>
 </template>
 
@@ -69,9 +69,9 @@ export default {
     components: {UploadFilled, CloseBold},
     data() {
         return {
-            selectedImages: [],
+            selectedList: [],
+            uploadedList: [],
             count: 0,
-            link: null,
         }
     },
     mounted() {
@@ -83,12 +83,17 @@ export default {
         choose() {
             this.$refs.choiceInput.dispatchEvent(new MouseEvent('click'))
         },
+
+        /**
+         * 选取图片
+         * @param event
+         */
         choiceChanged(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 const f = files[i]
                 const src = window.URL.createObjectURL(f)
-                this.selectedImages.push({
+                this.selectedList.push({
                     progress: 0,
                     src: src,
                     image: f,
@@ -98,28 +103,39 @@ export default {
                 })
             }
         },
+
+        /**
+         * 移除图片
+         * @param index
+         */
         remove(index) {
-            this.selectedImages.splice(index, 1)
-            console.log(this.selectedImages)
+            this.selectedList.splice(index, 1)
+            console.log(this.selectedList)
         },
+
+        /**
+         * 上传图片
+         * @param index
+         */
         imageUpload(index) {
-            this.selectedImages[index].status = '正在上传';
-            const image = this.selectedImages[index].image;
+            this.selectedList[index].status = '正在上传';
+            const image = this.selectedList[index].image;
+
+            //上传图片
             upload(image, progressEvent => {
-                this.selectedImages[index].progress = Math.round(
+                //进度监听
+                this.selectedList[index].progress = Math.round(
                     (progressEvent.loaded * 100) / progressEvent.total
                 );
             }).then(r => {
-                this.selectedImages[index].status = '上传成功';
+                this.selectedList[index].status = '上传成功';
+                this.uploadedList.push(r.links)
                 ElNotification.success({message: r.links.url})
             }).catch(e => {
-                this.selectedImages[index].status = '上传失败';
+                this.selectedList[index].status = '上传失败';
                 ElMessage.error({message: e})
             })
         },
-        handleClick(tab, event) {
-            console.log(tab, event);
-        }
     }
 }
 </script>

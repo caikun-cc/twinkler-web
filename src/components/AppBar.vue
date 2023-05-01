@@ -7,15 +7,15 @@
             <div class="menu-container">
                 <ul>
                     <li v-for="item in menu">
-                        <span onmouseover="this.style.cursor=' hand'"
-                              @click="navigationTo(item.route)">
+                        <span onmouseover="this.style.cursor=' hand'" @click="navigationTo(item.route)">
                             {{ item.title }}
                         </span>
                     </li>
                 </ul>
             </div>
             <!-- 用户一登录头像部分 -->
-            <div class="user-container" v-show="isLogged" @click="jumpToConsole" v-loading.fullscreen.lock="fullscreenLoading">
+            <div class="user-container" v-show="isLogged" @click="navigationTo('console')"
+                 v-loading.fullscreen.lock="fullscreenLoading">
                 <img :src="user.avatar" alt="">
                 <span>{{ user.nick }}</span>
             </div>
@@ -28,7 +28,6 @@ import router from "../router/router.js";
 import jwtDispatcher from "../utils/JwtDispatcher.js";
 import {getUserDetails} from "../http/Apis.js";
 import {ElMessage} from "element-plus";
-import {refresh} from "../http/HttpClient.js";
 
 export default {
     name: "AppBar",
@@ -38,70 +37,51 @@ export default {
             isLogged: false,
             user: {
                 nick: "",
-                avatar: "https://cloud.caikun.site/f/kWfW/defaultAvatar.jpg",
+                avatar: "",
                 id: 0,
             },
             fullscreenLoading: false
         }
     },
     mounted() {
-        let jwtUser = jwtDispatcher.getUserDetails()
-        if (jwtUser) {
-            this.user.id = jwtUser.id
-            this.user.avatar = jwtUser.avatar
-            this.user.nick = jwtUser.nick
-        } else {
-            this.loadUserDetails()
-        }
+        this.loadUserDetails()
     },
     computed: {
         menu() {
-            if (jwtDispatcher.getJwtSubject() != null) {
+            if (this.isLogged) {
                 this.menus = [{title: "上传", route: "upload"}]
-                this.isLogged = true
             } else {
                 this.menus = [
                     {title: "上传", route: "upload"},
                     {title: "登录", route: "login"}
                 ]
-                this.isLogged = false
             }
             return this.menus
         }
     },
     methods: {
+        router() {
+            return router
+        },
         navigationTo(name) {
             router.push({name})
-        },
-
-        /**
-         * 点击去管理后台
-         */
-        jumpToConsole() {
-            if (this.user.id !== 0) {
-                if (!jwtDispatcher.isAvailable()) {
-                    const {refreshToken} = jwtDispatcher.getJwtSubject()
-                    this.fullscreenLoading = true
-                    refresh(refreshToken).then(r => {
-                        jwtDispatcher.save(r)
-                        router.push({name: "console"})
-                    }).catch(e => {
-                        router.push({name: "login"})
-                    })
-                } else router.push({name: "console"})
-            } else router.push({name: "login"})
         },
         /**
          * 获取登录用户信息
          */
         loadUserDetails() {
             if (jwtDispatcher.getJwtSubject()) {
+                this.fullscreenLoading = true
                 getUserDetails().then(r => {
                     this.user.id = r.id
                     this.user.avatar = r.avatar
                     this.user.nick = r.nick
+                    this.isLogged = true
+                    this.fullscreenLoading = false
                 }).catch(e => {
+                    this.isLogged = false
                     ElMessage.error({message: e})
+                    this.fullscreenLoading = false
                 })
             }
         }
