@@ -1,7 +1,8 @@
 <template>
     <div class="galleries-container">
-        <div>
+        <div style="display: flex;justify-content: space-between;align-items: center">
             <el-button type="primary" :icon="Upload" @click="drawerIsOpen=true">上传</el-button>
+            <el-button :icon="RefreshRight" size="large" circle/>
         </div>
         <el-divider/>
         <div class="galleries-box">
@@ -18,10 +19,10 @@
             </div>
         </div>
         <el-divider/>
-        <div style="text-align: center" v-show="isHasMore && !isLoading">
-            <el-button @click="loadMore">加载更多</el-button>
+        <div style="text-align: center" v-show="isHasMore">
+            <el-button @click="loadMore" :loading="isLoading">加载更多</el-button>
         </div>
-        <div style="text-align: center" v-show="!isHasMore && !isLoading">
+        <div style="text-align: center" v-show="!isHasMore">
             <p>没有更多了！</p>
         </div>
         <el-drawer v-model="drawerIsOpen" title="Upload Images" direction="ttb">
@@ -33,13 +34,16 @@
 <script>
 import {getImageList} from "../../http/Apis.js";
 import {ElMessage} from "element-plus";
-import {Upload} from "@element-plus/icons-vue";
+import {RefreshRight, Upload} from "@element-plus/icons-vue";
 import SimpleUploader from "../SimpleUploader.vue";
 
 export default {
     name: "Galleries",
     components: {SimpleUploader},
     computed: {
+        RefreshRight() {
+            return RefreshRight
+        },
         Upload() {
             return Upload
         }
@@ -64,7 +68,7 @@ export default {
          */
         fetchImagesByPager(pageNumber) {
             this.isLoading = true
-            getImageList(pageNumber, 2).then(r => {
+            getImageList(pageNumber, 5).then(r => {
                 const {collection} = r
                 const {last} = r
                 this.isHasMore = !last
